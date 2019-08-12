@@ -1,22 +1,22 @@
-package reader
+package parser
 
 import (
 	"github.com/PuerkitoBio/goquery"
 	"io"
 )
 
-type HrefReader interface {
-	ReadFrom(reader io.Reader) ([]string, error)
+type HrefParser interface {
+	ParseFrom(reader io.Reader) ([]string, error)
 }
 
-func NewReader() HrefReader {
-	return &goqueryReader{}
+func NewParser() HrefParser {
+	return &goqueryHrefParser{}
 }
 
-type goqueryReader struct {
+type goqueryHrefParser struct {
 }
 
-func (hr goqueryReader) ReadFrom(reader io.Reader) ([]string, error) {
+func (hp goqueryHrefParser) ParseFrom(reader io.Reader) ([]string, error) {
 	doc, err := goquery.NewDocumentFromReader(reader)
 
 	if err != nil {

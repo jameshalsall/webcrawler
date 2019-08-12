@@ -25,6 +25,6 @@ func (f fakeReg) Visit(url string) {
 type fakeReader struct {
 }
 
-func (f fakeReader) ReadFrom(reader io.Reader) ([]string, error) {
+func (f fakeReader) ParseFrom(reader io.Reader) ([]string, error) {
 	return nil, nil
 }

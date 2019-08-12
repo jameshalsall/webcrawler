@@ -20,7 +20,7 @@ func Normalize(baseUrl, path string) (string, error) {
 	if strings.HasPrefix(path, "http") {
 		u = path
 	} else {
-		u = baseUrl + "/" + strings.TrimLeft(path, "/")
+		u = baseUrl + "/" + strings.TrimLeft(strings.TrimRight(path, "/"), "/")
 	}
 
 	_, err := url.ParseRequestURI(u)

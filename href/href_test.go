@@ -30,10 +30,18 @@ func TestNormalize(t *testing.T) {
 			want: "https://monzo.com/foo/bar?baz=1",
 		},
 		{
-			name: "Valid URL in path",
+			name: "Valid absolute URL in path",
 			args:args{
 				baseUrl: "https://monzo.com/",
 				path:    "https://monzo.com/lending",
+			},
+			want: "https://monzo.com/lending",
+		},
+		{
+			name: "Trailing slash in resulting URL is removed",
+			args:args{
+				baseUrl: "https://monzo.com/",
+				path: "/lending/",
 			},
 			want: "https://monzo.com/lending",
 		},
