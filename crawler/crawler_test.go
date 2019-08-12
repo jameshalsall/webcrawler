@@ -2,29 +2,28 @@ package crawler
 
 import (
 	"github.com/jameshalsall/crawler/model"
-	"io"
 	"testing"
 )
 
 func TestNewCrawler(t *testing.T) {
 	t.Run("NewCrawler creates a crawler", func(t *testing.T) {
-		NewCrawler(&fakeReg{}, make(chan model.Page), make(chan error), &fakeReader{})
+		NewCrawler(&fakeReg{}, make(chan model.Page), make(chan error), &fakeClient{})
 	})
 }
 
 type fakeReg struct {
 }
 
-func (f fakeReg) HasBeenVisited(url string) bool {
+func (fr fakeReg) HasBeenVisited(url string) bool {
 	return true
 }
 
-func (f fakeReg) Visit(url string) {
+func (fr fakeReg) Visit(url string) {
 }
 
-type fakeReader struct {
+type fakeClient struct {
 }
 
-func (f fakeReader) ParseFrom(reader io.Reader) ([]string, error) {
-	return nil, nil
+func (fc fakeClient) GetHrefsFromUrl(url string) ([]string, error) {
+	return []string{""}, nil
 }
