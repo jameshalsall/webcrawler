@@ -7,6 +7,7 @@ import (
 type PageRegistry interface {
 	HasBeenVisited(url string) bool
 	Visit(url string)
+	NumberOfPagesVisited() int
 }
 
 type pageRegistry struct {
@@ -32,4 +33,11 @@ func (pr pageRegistry) Visit(url string) {
 	defer pr.mux.Unlock()
 
 	pr.visited[url] = true
+}
+
+func (pr pageRegistry) NumberOfPagesVisited() int {
+	pr.mux.RLock()
+	defer pr.mux.RUnlock()
+
+	return len(pr.visited)
 }
