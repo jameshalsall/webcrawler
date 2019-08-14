@@ -1,7 +1,6 @@
 package crawler
 
 import (
-	"fmt"
 	"github.com/jameshalsall/crawler/client"
 	"github.com/jameshalsall/crawler/href"
 	"github.com/jameshalsall/crawler/model"
@@ -61,7 +60,6 @@ func (c *crawler) crawlUrl(url string, ch chan<- model.Page, depth int) {
 		cpch := make(chan model.Page)
 		wg.Add(1)
 		go func() {
-			fmt.Println("started listening for child page crawls of", u)
 			p := &model.Page{
 				URL:      u,
 				Children: map[string]model.Page{},

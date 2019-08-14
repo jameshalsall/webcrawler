@@ -44,10 +44,23 @@ func Test_HrefParser_ParseFrom(t *testing.T) {
 				<html>
 				<head></head>
 					<a href="/foo">Foo</a>	
-					<a href="/foo/baz">Baz</a>	
+					<a href="/foo/baz">Baz</a>
 				</html>`,
 				)},
 			want: []string{"/foo", "/foo/baz"},
+		},
+		{
+			name: "<a> tags with no hrefs are not returned",
+			args: args{
+				reader: strings.NewReader(`
+				<!doctype html>
+				<html>
+				<head></head>
+					<a href="/foo">Foo</a>	
+					<a>Baz</a>
+				</html>`,
+				)},
+			want: []string{"/foo"},
 		},
 		{
 			name: "Empty string returns no hrefs",

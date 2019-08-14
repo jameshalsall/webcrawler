@@ -29,16 +29,11 @@ func main() {
 	pagech := make(chan model.Page, 100)
 	errch := make(chan error)
 
+	go listenForErrors(errch)
+
 	c := crawler.NewCrawler(reg, pagech, errch, client.NewClient(parser.NewParser()))
 
 	go c.Crawl(startingUrl, 3)
-
-	go func() {
-		select {
-		case err := <- errch:
-			log.Fatalln(err)
-		}
-	}()
 
 	for p, ok := <-pagech; ok; p, ok = <-pagech {
 		sitem.Children[p.URL] = p
@@ -46,6 +41,13 @@ func main() {
 
 	fmt.Println(sitem)
 	fmt.Println("Done.")
+}
+
+func listenForErrors(errch chan error) {
+	select {
+	case err := <- errch:
+		log.Fatalln(err)
+	}
 }
 
 func usage() {
