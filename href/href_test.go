@@ -15,48 +15,48 @@ func TestNormalize(t *testing.T) {
 	}{
 		{
 			name: "Valid URL",
-			args:args{
-				baseUrl: "https://monzo.com/",
+			args: args{
+				baseUrl: "https://foo.com/",
 				path:    "/foo",
 			},
-			want: "https://monzo.com/foo",
+			want: "https://foo.com/foo",
 		},
 		{
 			name: "Valid URL with query string",
-			args:args{
-				baseUrl: "https://monzo.com/",
+			args: args{
+				baseUrl: "https://foo.com/",
 				path:    "/foo/bar?baz=1",
 			},
-			want: "https://monzo.com/foo/bar?baz=1",
+			want: "https://foo.com/foo/bar?baz=1",
 		},
 		{
 			name: "Valid absolute URL in path",
-			args:args{
-				baseUrl: "https://monzo.com/",
-				path:    "https://monzo.com/lending",
+			args: args{
+				baseUrl: "https://foo.com/",
+				path:    "https://foo.com/lending",
 			},
-			want: "https://monzo.com/lending",
+			want: "https://foo.com/lending",
 		},
 		{
 			name: "Trailing slash in resulting URL is removed",
-			args:args{
-				baseUrl: "https://monzo.com/",
-				path: "/lending/",
+			args: args{
+				baseUrl: "https://foo.com/",
+				path:    "/lending/",
 			},
-			want: "https://monzo.com/lending",
+			want: "https://foo.com/lending",
 		},
 		{
 			name: "Invalid URL: javascript: prefix",
-			args:args{
-				baseUrl: "https://monzo.com/",
+			args: args{
+				baseUrl: "https://foo.com/",
 				path:    "javascript:void(0);",
 			},
 			wantErr: true,
 		},
 		{
 			name: "Invalid URL: # link",
-			args:args{
-				baseUrl: "https://monzo.com/",
+			args: args{
+				baseUrl: "https://foo.com/",
 				path:    "#",
 			},
 			wantErr: true,
@@ -88,16 +88,16 @@ func TestUrlsHaveDifferentDomains(t *testing.T) {
 	}{
 		{
 			name: "URLs are for the same domain",
-			args:args{
-				url1: "https://monzo.com/",
-				url2: "https://monzo.com/path/foo",
+			args: args{
+				url1: "https://foo.com/",
+				url2: "https://foo.com/path/foo",
 			},
 			want: false,
 		},
 		{
 			name: "URLs are for a different domain",
-			args:args{
-				url1: "https://monzo.com/foo",
+			args: args{
+				url1: "https://foo.com/foo",
 				url2: "https://google.com/",
 			},
 			want: true,
