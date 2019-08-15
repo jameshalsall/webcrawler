@@ -24,22 +24,17 @@ func main() {
 
 	fmt.Println("Starting crawler on", startingUrl, "up to", depth, "pages deep")
 
-	sitem := &model.Sitemap{BaseURL: startingUrl, Children: map[string]model.Page{}}
 	reg := registry.NewRegistry()
-	pagech := make(chan model.Page, 100)
 	errch := make(chan error)
 
 	go progress(reg)
 	go listenForErrors(errch)
 
-	c := crawler.NewCrawler(reg, pagech, errch, client.NewClient(parser.NewParser()))
+	c := crawler.NewCrawler(reg, errch, client.NewClient(parser.NewParser()))
 
-	go c.Crawl(startingUrl, depth)
+	sitem := c.Crawl(startingUrl, depth)
 
-	for p, ok := <-pagech; ok; p, ok = <-pagech {
-		sitem.Children[p.URL] = p
-	}
-
+	fmt.Println("")
 	fmt.Println(model.SitemapAsString(sitem))
 	fmt.Println("Done.")
 }

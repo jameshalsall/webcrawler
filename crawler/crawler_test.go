@@ -11,31 +11,21 @@ import (
 )
 
 func TestNewCrawler(t *testing.T) {
-	ch := make(chan model.Page)
 	errch := make(chan error)
 
 	type args struct {
 		reg   registry.PageRegistry
-		ch    chan<- model.Page
 		errch chan<- error
 		cl    client.HttpClient
 	}
 	tests := []struct {
 		name string
 		args args
-		want Crawler
 	}{
 		{
-			name: "NewCrawler() returns new instance of a crawler",
+			name: "Returns new instance of a crawler",
 			args: args{
 				reg:   registry.NewRegistry(),
-				ch:    ch,
-				errch: errch,
-				cl:    &fakeClient{},
-			},
-			want: &crawler{
-				reg:   registry.NewRegistry(),
-				ch:    ch,
 				errch: errch,
 				cl:    &fakeClient{},
 			},
@@ -43,8 +33,10 @@ func TestNewCrawler(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewCrawler(tt.args.reg, tt.args.ch, tt.args.errch, tt.args.cl); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewCrawler() = %v, want %v", got, tt.want)
+			got := NewCrawler(tt.args.reg, tt.args.errch, tt.args.cl)
+			_, ok := got.(Crawler)
+			if !ok {
+				t.Error("NewCrawler() does not return an instance of a crawler")
 			}
 		})
 	}
@@ -72,13 +64,13 @@ func Test_crawler_Crawl(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Crawl() sends correct pages to the page channel",
+			name: "Crawls and builds an expected, valid sitemap",
 			args: args{
 				url:   "https://foo.com/bar",
 				depth: 3,
 			},
 			want: &model.Sitemap{
-				BaseURL: "",
+				BaseURL: "https://foo.com/bar",
 				Children: map[string]model.Page{
 					"https://foo.com/bar/baz": {
 						URL: "https://foo.com/bar/baz",
@@ -106,15 +98,15 @@ func Test_crawler_Crawl(t *testing.T) {
 			},
 		},
 		{
-			name: "Crawl() at depth 0 results in no pages",
+			name: "With a depth of 0 it builds an empty sitemap",
 			args: args{
 				url:   "https://foo.com/",
 				depth: 0,
 			},
-			want: &model.Sitemap{BaseURL:"", Children: map[string]model.Page{}},
+			want: &model.Sitemap{BaseURL:"https://foo.com/", Children: map[string]model.Page{}},
 		},
 		{
-			name: "Crawl() sends error from client fetching URL to the errch",
+			name: "Sends error from client fetching URL to the errch",
 			args:args{
 				url:   "https://non-existent-url/",
 				depth: 3,
@@ -124,21 +116,15 @@ func Test_crawler_Crawl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		errstore.reset()
-		ch := make(chan model.Page, 100)
 
 		t.Run(tt.name, func(t *testing.T) {
 			c := &crawler{
 				reg:   registry.NewRegistry(),
-				ch:    ch,
 				errch: errch,
 				cl:    &fakeClient{},
 			}
 
-			got := &model.Sitemap{Children: map[string]model.Page{}}
-			c.Crawl(tt.args.url, tt.args.depth)
-			for p, ok := <-ch; ok; p, ok = <-ch {
-				got.Children[p.URL] = p
-			}
+			got := c.Crawl(tt.args.url, tt.args.depth)
 
 			time.Sleep(time.Millisecond * 100)
 

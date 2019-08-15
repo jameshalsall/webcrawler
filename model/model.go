@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -17,7 +16,6 @@ type Page struct {
 
 func SitemapAsString(s *Sitemap) string {
 	var str []string
-	str = append(str, fmt.Sprintf("Sitemap for %s", s.BaseURL))
 
 	for _, p := range s.Children {
 		str = append(str, childrenAsString(&p, 1))

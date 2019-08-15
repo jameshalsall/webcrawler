@@ -22,3 +22,15 @@ In order to crawl you need to specify the starting URL. This should contain the 
 as the domain name. For example:
 
     ./webcrawler https://domain.com/
+
+Alternatively you can run the `main.go` file using `go run` without building:
+
+    go run main.go https://domain.com/
+
+## Viewing results
+
+Results are written as a simple string representation of a sitemap, and written directly to stdout. This
+means that viewing results for larger sitemap trees can be difficult. A simple solution is to pipe the result
+to something like `more` or `less` (pardon the pun):
+
+    ./webcrawler https://domain.com/ | more

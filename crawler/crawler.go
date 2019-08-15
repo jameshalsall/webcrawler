@@ -9,31 +9,39 @@ import (
 )
 
 type Crawler interface {
-	Crawl(url string, depth int)
+	Crawl(url string, depth int) *model.Sitemap
 }
 
 type crawler struct {
 	reg   registry.PageRegistry
-	ch    chan<- model.Page
 	errch chan<- error
 	cl    client.HttpClient
 }
 
-func NewCrawler(reg registry.PageRegistry, ch chan<- model.Page, errch chan<- error, cl client.HttpClient) Crawler {
+func NewCrawler(reg registry.PageRegistry, errch chan<- error, cl client.HttpClient) Crawler {
 	return &crawler{
 		reg:   reg,
-		ch:    ch,
 		errch: errch,
 		cl:    cl,
 	}
 }
 
-func (c *crawler) Crawl(url string, depth int) {
-	c.crawlUrl(url, c.ch, depth)
+func (c *crawler) Crawl(url string, depth int) *model.Sitemap {
+	ch := make(chan model.Page, 100)
+	sitem := &model.Sitemap{BaseURL: url, Children: map[string]model.Page{}}
+
+	go c.crawlUrl(url, ch, depth)
+
+	for p, ok := <-ch; ok; p, ok = <-ch {
+		sitem.Children[p.URL] = p
+	}
+
+	return sitem
 }
 
 func (c *crawler) crawlUrl(url string, ch chan<- model.Page, depth int) {
 	defer close(ch)
+
 	if depth <= 0 {
 		return
 	}
