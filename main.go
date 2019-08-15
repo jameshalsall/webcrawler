@@ -40,7 +40,7 @@ func main() {
 
 func listenForErrors(errch chan error) {
 	select {
-	case err := <- errch:
+	case err := <-errch:
 		log.Fatalln(err)
 	}
 }
