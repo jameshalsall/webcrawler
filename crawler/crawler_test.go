@@ -103,11 +103,11 @@ func Test_crawler_Crawl(t *testing.T) {
 				url:   "https://foo.com/",
 				depth: 0,
 			},
-			want: &model.Sitemap{BaseURL:"https://foo.com/", Children: map[string]model.Page{}},
+			want: &model.Sitemap{BaseURL: "https://foo.com/", Children: map[string]model.Page{}},
 		},
 		{
 			name: "Sends error from client fetching URL to the errch",
-			args:args{
+			args: args{
 				url:   "https://non-existent-url/",
 				depth: 3,
 			},

@@ -87,7 +87,7 @@ func TestUrlsHaveDifferentDomains(t *testing.T) {
 		want bool
 	}{
 		{
-			name: "URLs are for the same domain",
+			name: "Returns false if URLs are for the same domain",
 			args: args{
 				url1: "https://foo.com/",
 				url2: "https://foo.com/path/foo",
@@ -95,10 +95,18 @@ func TestUrlsHaveDifferentDomains(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "URLs are for a different domain",
+			name: "Returns true if URLs are for a different domain",
 			args: args{
 				url1: "https://foo.com/foo",
 				url2: "https://google.com/",
+			},
+			want: true,
+		},
+		{
+			name: "Returns false if URLs are on different sub-domain",
+			args: args{
+				url1: "https://foo.com/foo",
+				url2: "https://sub.foo.com/foo",
 			},
 			want: true,
 		},

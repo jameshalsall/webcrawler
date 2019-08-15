@@ -1,19 +1,23 @@
+// Package model provides structs that model sitemaps and their child pages
 package model
 
 import (
 	"strings"
 )
 
+// Sitemap represents the root page that the crawler was started on
 type Sitemap struct {
-	BaseURL string
+	BaseURL  string
 	Children map[string]Page
 }
 
+// Page represents child pages in the sitemap
 type Page struct {
-	URL string
+	URL      string
 	Children map[string]Page
 }
 
+// SitemapAsString returns a string representation of a Sitemap
 func SitemapAsString(s *Sitemap) string {
 	var str []string
 
@@ -30,7 +34,7 @@ func childrenAsString(p *Page, indent int) string {
 	}
 
 	for _, cp := range p.Children {
-		str = append(str, childrenAsString(&cp, indent + 1))
+		str = append(str, childrenAsString(&cp, indent+1))
 	}
 
 	return strings.Join(str, "\n")

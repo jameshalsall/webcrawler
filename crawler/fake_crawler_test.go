@@ -22,8 +22,8 @@ func (fc fakeClient) GetHrefsFromUrl(url string) ([]string, error) {
 			"https://foo.com/foo/beep",
 			"invalid",
 		},
-		"https://foo.com/foo/baz": {},
-		"https://foo.com/foo/bop": {},
+		"https://foo.com/foo/baz":  {},
+		"https://foo.com/foo/bop":  {},
 		"https://foo.com/foo/beep": {},
 	}
 

@@ -2,7 +2,6 @@ package registry
 
 import (
 	"reflect"
-	"sync"
 	"testing"
 )
 
@@ -27,7 +26,6 @@ func TestNewRegistry(t *testing.T) {
 
 func Test_pageRegistry_HasBeenVisited(t *testing.T) {
 	type fields struct {
-		mux     sync.RWMutex
 		visited map[string]bool
 	}
 	type args struct {
@@ -42,26 +40,23 @@ func Test_pageRegistry_HasBeenVisited(t *testing.T) {
 		{
 			name: "HasBeenVisited() returns false for URL if not visited",
 			fields: fields{
-				mux:     sync.RWMutex{},
 				visited: map[string]bool{},
 			},
-			args: args{url:"https://foo.com/"},
+			args: args{url: "https://foo.com/"},
 			want: false,
 		},
 		{
 			name: "HasBeenVisited() returns true for URL if it has been visited",
 			fields: fields{
-				mux:     sync.RWMutex{},
-				visited: map[string]bool{"https://baz.com/": true,},
+				visited: map[string]bool{"https://baz.com/": true},
 			},
-			args: args{url:"https://baz.com/"},
+			args: args{url: "https://baz.com/"},
 			want: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			pr := pageRegistry{
-				mux:     tt.fields.mux,
 				visited: tt.fields.visited,
 			}
 			if got := pr.HasBeenVisited(tt.args.url); got != tt.want {
@@ -74,7 +69,6 @@ func Test_pageRegistry_HasBeenVisited(t *testing.T) {
 func Test_pageRegistry_Visit(t *testing.T) {
 	t.Run("Visit() marks a page as visited", func(t *testing.T) {
 		pr := pageRegistry{
-			mux:     sync.RWMutex{},
 			visited: map[string]bool{},
 		}
 

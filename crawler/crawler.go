@@ -8,6 +8,11 @@ import (
 	"sync"
 )
 
+// Crawler provides an API for crawling a web page and generates
+// a sitemap from it representing the relationships of the links
+// between pages.
+// NOTE: The depth parameter is useful for controlling how far the
+// rabit hole the crawler goes.
 type Crawler interface {
 	Crawl(url string, depth int) *model.Sitemap
 }
@@ -18,6 +23,11 @@ type crawler struct {
 	cl    client.HttpClient
 }
 
+// NewCrawler creates a new crawler ready for use, it requires the following
+// parameters:
+//  reg   registry.PageRegistry // the registry that is responsible for tracking page visits
+//  errch chan<- error          // error channel were critical errors will be sent
+//  cl    client.HttpClient     // A HTTP client that will be used to fetch URL contents and return child page URLs
 func NewCrawler(reg registry.PageRegistry, errch chan<- error, cl client.HttpClient) Crawler {
 	return &crawler{
 		reg:   reg,
@@ -26,6 +36,10 @@ func NewCrawler(reg registry.PageRegistry, errch chan<- error, cl client.HttpCli
 	}
 }
 
+// Crawl starts the crawler process on the crawler. Crawling is done concurrently
+// by spawning goroutines for each child page URL. A chain of goroutines will be
+// created as the crawler goes deeper into the site (see the depth property in the
+// `NewCrawler` function on how to control this).
 func (c *crawler) Crawl(url string, depth int) *model.Sitemap {
 	ch := make(chan model.Page, 100)
 	sitem := &model.Sitemap{BaseURL: url, Children: map[string]model.Page{}}

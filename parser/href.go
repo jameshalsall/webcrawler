@@ -1,3 +1,4 @@
+// Package parser provides interfaces for parsing href values from readers.
 package parser
 
 import (
@@ -5,10 +6,13 @@ import (
 	"io"
 )
 
+// HrefParser provides a way of parsing href attribute values from
+// a HTML document source.
 type HrefParser interface {
 	ParseFrom(reader io.Reader) ([]string, error)
 }
 
+// NewParser creates a new HrefParser
 func NewParser() HrefParser {
 	return &goqueryHrefParser{}
 }
@@ -16,6 +20,8 @@ func NewParser() HrefParser {
 type goqueryHrefParser struct {
 }
 
+// ParseFrom will read a HTML document body from the provided `io.Reader`
+// instance and return any href values in a slice of strings.
 func (hp goqueryHrefParser) ParseFrom(reader io.Reader) ([]string, error) {
 	doc, err := goquery.NewDocumentFromReader(reader)
 

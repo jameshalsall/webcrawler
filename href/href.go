@@ -1,4 +1,4 @@
-// href provides helper functions for verifying and manipulation
+// Package href provides helper functions for verifying and manipulation
 // href attribute values from a crawled page
 package href
 
@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// Normalize takes a URL path (href) value and returns it in a normalized format
+// ready for use as a fully-qualifed URL, including protocol
 func Normalize(baseUrl, path string) (string, error) {
 	baseUrl = strings.TrimRight(baseUrl, "/")
 
@@ -23,14 +25,18 @@ func Normalize(baseUrl, path string) (string, error) {
 		u = baseUrl + "/" + strings.TrimLeft(strings.TrimRight(path, "/"), "/")
 	}
 
-	_, err := url.ParseRequestURI(u)
+	_, err := url.Parse(u)
 	if err != nil {
-		return "", errors.New(fmt.Sprintf("error: %s is not a valid URL, skipping\n", u))
+		return "", fmt.Errorf("error: %s is not a valid URL, skipping\n", u)
 	}
 
 	return u, nil
 }
 
+// UrlsHaveDifferentDomains checks whether the 2 provided URLs share the same domain or
+// are on different domains.
+// NOTE: It is not intelligent enough to realise that sub-domains are on the same higher
+// level domain.
 func UrlsHaveDifferentDomains(url1, url2 string) bool {
 	u1, err := url.Parse(url1)
 	if err != nil {
