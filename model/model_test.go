@@ -30,12 +30,12 @@ func TestSitemapAsString(t *testing.T) {
 					},
 				},
 			}},
-			shouldContain: []string{"https://foo.com","https://baz.com","https://bar.com"},
+			shouldContain: []string{"https://baz.com","https://bar.com"},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := SitemapAsString(tt.args.s);
+			got := SitemapAsString(tt.args.s)
 			for _, s := range tt.shouldContain {
 				if !strings.Contains(got, s) {
 					t.Errorf("SitemapAsString() value does not contain expected URL: %s (value received: %s)", s, got)

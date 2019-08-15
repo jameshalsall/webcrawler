@@ -2,17 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/jameshalsall/crawler/client"
-	"github.com/jameshalsall/crawler/crawler"
-	"github.com/jameshalsall/crawler/model"
-	"github.com/jameshalsall/crawler/parser"
-	"github.com/jameshalsall/crawler/registry"
+	"github.com/jameshalsall/webcrawler/client"
+	"github.com/jameshalsall/webcrawler/crawler"
+	"github.com/jameshalsall/webcrawler/model"
+	"github.com/jameshalsall/webcrawler/parser"
+	"github.com/jameshalsall/webcrawler/registry"
 	"log"
 	"os"
 	"time"
 )
 
-const depth = 4
+const depth = 3
 
 func main() {
 	if len(os.Args) != 2 {
@@ -22,15 +22,14 @@ func main() {
 
 	startingUrl := os.Args[1]
 
-	fmt.Println("Starting crawler on", startingUrl, "up to", depth, "pages deep")
+	fmt.Println("Running crawler on", startingUrl, "up to", depth, "pages deep")
 
-	reg := registry.NewRegistry()
 	errch := make(chan error)
 
-	go progress(reg)
+	go progress()
 	go listenForErrors(errch)
 
-	c := crawler.NewCrawler(reg, errch, client.NewClient(parser.NewParser()))
+	c := crawler.NewCrawler(registry.NewRegistry(), errch, client.NewClient(parser.NewParser()))
 
 	sitem := c.Crawl(startingUrl, depth)
 
@@ -48,13 +47,13 @@ func listenForErrors(errch chan error) {
 
 func usage() {
 	fmt.Println(`Usage:
-crawler <URL>  Start crawling on the specified URL, including protocol e.g. "crawler https://monzo.com"`)
+webcrawler <URL>  Start crawling on the specified URL, including protocol e.g. "webcrawler https://monzo.com"`)
 }
 
-func progress(reg registry.PageRegistry) {
+func progress() {
 	fmt.Println("")
 	for {
-		fmt.Println("Pages crawled:", reg.NumberOfPagesVisited())
+		fmt.Print(".")
 		time.Sleep(time.Second * 1)
 	}
 }

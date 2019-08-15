@@ -1,9 +1,9 @@
 package crawler
 
 import (
-	"github.com/jameshalsall/crawler/client"
-	"github.com/jameshalsall/crawler/model"
-	"github.com/jameshalsall/crawler/registry"
+	"github.com/jameshalsall/webcrawler/client"
+	"github.com/jameshalsall/webcrawler/model"
+	"github.com/jameshalsall/webcrawler/registry"
 	"reflect"
 	"sync"
 	"testing"

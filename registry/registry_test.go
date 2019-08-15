@@ -85,38 +85,3 @@ func Test_pageRegistry_Visit(t *testing.T) {
 		}
 	})
 }
-
-func Test_pageRegistry_NumberOfPagesVisited(t *testing.T) {
-	type fields struct {
-		mux     sync.RWMutex
-		visited map[string]bool
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   int
-	}{
-		{
-			name: "NumberOfPagesVisited() returns true count",
-			fields:fields{
-				mux:     sync.RWMutex{},
-				visited: map[string]bool{
-					"https://foo.com/": true,
-					"https://baz.com/": true,
-				},
-			},
-			want: 2,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			pr := pageRegistry{
-				mux:     tt.fields.mux,
-				visited: tt.fields.visited,
-			}
-			if got := pr.NumberOfPagesVisited(); got != tt.want {
-				t.Errorf("NumberOfPagesVisited() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}

@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/jameshalsall/crawler/parser"
+	"github.com/jameshalsall/webcrawler/parser"
 	"net/http"
 )
 

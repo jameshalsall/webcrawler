@@ -1,4 +1,4 @@
-module github.com/jameshalsall/crawler
+module github.com/jameshalsall/webcrawler
 
 go 1.12
 
