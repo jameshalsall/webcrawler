@@ -40,7 +40,7 @@ func main() {
 		sitem.Children[p.URL] = p
 	}
 
-	fmt.Println(model.SitemapAsAscii(sitem))
+	fmt.Println(model.SitemapAsString(sitem))
 	fmt.Println("Done.")
 }
 

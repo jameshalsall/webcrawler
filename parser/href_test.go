@@ -69,7 +69,7 @@ func Test_HrefParser_ParseFrom(t *testing.T) {
 			},
 		},
 		{
-			name: "Invalid HTML document returns error",
+			name: "Invalid HTML document returns no hrefs",
 			args: args{
 				reader: strings.NewReader(">admkiwajdiaw989243493dakdm`s,FOO></>"),
 			},

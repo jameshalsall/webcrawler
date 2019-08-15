@@ -15,24 +15,24 @@ type Page struct {
 	Children map[string]Page
 }
 
-func SitemapAsAscii(s *Sitemap) string {
+func SitemapAsString(s *Sitemap) string {
 	var str []string
 	str = append(str, fmt.Sprintf("Sitemap for %s", s.BaseURL))
 
 	for _, p := range s.Children {
-		str = append(str, childrenAsAscii(&p, 1))
+		str = append(str, childrenAsString(&p, 1))
 	}
 
 	return strings.Join(str, "\n")
 }
 
-func childrenAsAscii(p *Page, indent int) string {
+func childrenAsString(p *Page, indent int) string {
 	str := []string{
 		strings.Repeat("----", indent) + p.URL,
 	}
 
 	for _, cp := range p.Children {
-		str = append(str, childrenAsAscii(&cp, indent + 1))
+		str = append(str, childrenAsString(&cp, indent + 1))
 	}
 
 	return strings.Join(str, "\n")
