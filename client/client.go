@@ -13,6 +13,7 @@ type HttpClient interface {
 
 type httpClient struct {
 	hr parser.HrefParser
+	cl *http.Client
 }
 
 // NewClient creates and returns a default HttpClient instance
@@ -20,6 +21,9 @@ type httpClient struct {
 func NewClient(hr parser.HrefParser) HttpClient {
 	return &httpClient{
 		hr: hr,
+		cl: &http.Client{
+			Transport: &http.Transport{MaxConnsPerHost: 50},
+		},
 	}
 }
 
@@ -27,8 +31,8 @@ func NewClient(hr parser.HrefParser) HttpClient {
 // in the Go stdlib, parses the response for href attributes in <a> tags
 // using the client's configured parser.HrefParser instance and then returns
 // those hrefs as a slice of strings.
-func (h httpClient) GetHrefsFromUrl(url string) ([]string, error) {
-	res, err := http.Get(url)
+func (h *httpClient) GetHrefsFromUrl(url string) ([]string, error) {
+	res, err := h.cl.Get(url)
 	if err != nil {
 		return nil, err
 	}

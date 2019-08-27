@@ -96,6 +96,7 @@ func (c *crawler) crawlUrl(url string, ch chan<- model.Page, depth int) {
 
 		go c.crawlUrl(u, cpch, depth-1)
 
-		wg.Wait()
 	}
+
+	wg.Wait()
 }
